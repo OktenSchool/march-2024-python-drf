@@ -2,6 +2,8 @@ from django.db import models
 
 from core.models import BaseModel
 
+from apps.auto_parks.models import AutoParkModel
+
 
 class CarModel(BaseModel):
     class Meta:
@@ -10,3 +12,4 @@ class CarModel(BaseModel):
     model = models.CharField(max_length=50)
     price = models.IntegerField()
     year = models.IntegerField()
+    auto_park = models.ForeignKey(AutoParkModel, on_delete=models.CASCADE, related_name='cars')
