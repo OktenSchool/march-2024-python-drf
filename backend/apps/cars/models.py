@@ -3,6 +3,7 @@ from datetime import datetime
 from django.core import validators as V
 from django.db import models
 
+from apps.cars.managers import CarManager
 from core.models import BaseModel
 
 from apps.auto_parks.models import AutoParkModel
@@ -21,3 +22,5 @@ class CarModel(BaseModel):
     price = models.IntegerField(validators=[V.MinValueValidator(1), V.MaxValueValidator(1_000_000)])
     year = models.IntegerField(validators=[V.MinValueValidator(1990), V.MaxValueValidator(datetime.now().year)])
     auto_park = models.ForeignKey(AutoParkModel, on_delete=models.CASCADE, related_name='cars')
+
+    objects = CarManager()
