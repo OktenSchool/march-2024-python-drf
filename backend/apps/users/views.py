@@ -1,12 +1,14 @@
-from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, CreateAPIView, GenericAPIView
 from django.contrib.auth import get_user_model
+
+from rest_framework import status
+from rest_framework.generics import CreateAPIView, GenericAPIView, ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.users.serializers import UserSerializer
 
 UserModel = get_user_model()
+
 
 
 class UsersListCreateView(ListCreateAPIView):
