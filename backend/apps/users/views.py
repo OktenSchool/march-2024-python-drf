@@ -1,19 +1,21 @@
 from django.contrib.auth import get_user_model
 
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView, ListCreateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import GenericAPIView, ListCreateAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+
+from core.services.email_service import EmailService
 
 from apps.users.serializers import UserSerializer
 
 UserModel = get_user_model()
 
 
-
 class UsersListCreateView(ListCreateAPIView):
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (AllowAny,)
 
 
 class UserMeView(GenericAPIView):
@@ -42,6 +44,7 @@ class UserBanView(GenericAPIView):
 
         return Response(serializer.data, status.HTTP_200_OK)
 
+
 class UserUnBanView(GenericAPIView):
     queryset = UserModel.objects.all()
 
@@ -56,6 +59,7 @@ class UserUnBanView(GenericAPIView):
         serializer = UserSerializer(user)
 
         return Response(serializer.data, status.HTTP_200_OK)
+
 
 class UserToAdminView(GenericAPIView):
     queryset = UserModel.objects.all()
@@ -72,6 +76,7 @@ class UserToAdminView(GenericAPIView):
 
         return Response(serializer.data, status.HTTP_200_OK)
 
+
 class AdminToUserView(GenericAPIView):
     queryset = UserModel.objects.all()
 
@@ -86,3 +91,12 @@ class AdminToUserView(GenericAPIView):
         serializer = UserSerializer(user)
 
         return Response(serializer.data, status.HTTP_200_OK)
+
+
+class TestEmailView(GenericAPIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, *args, **kwargs):
+        EmailService.send_test()
+
+        return Response(status=status.HTTP_200_OK)
