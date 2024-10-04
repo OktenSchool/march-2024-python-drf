@@ -1,13 +1,26 @@
 from rest_framework import serializers
 
-from apps.cars.models import CarModel
+from apps.cars.models import CarModel, CarPhotoModel
+
+
+class CarPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CarPhotoModel
+        fields = ('photo',)
+        extra_kwargs = {
+            'photo': {
+                'required': True
+            }
+        }
 
 
 class CarSerializer(serializers.ModelSerializer):
+    photos = CarPhotoSerializer(many=True, read_only=True)
+
     class Meta:
         model = CarModel
         # fields = '__all__'
-        fields = ('id', 'model', 'body_type', 'price', 'year', 'created_at', 'updated_at')
+        fields = ('id', 'model', 'body_type', 'price', 'year', 'photos', 'created_at', 'updated_at')
 
     def validate(self, car):
         if car['model'] == 'KIA':
@@ -21,14 +34,3 @@ class CarSerializer(serializers.ModelSerializer):
         if price == 555:
             raise serializers.ValidationError({"details": "price is 555"})
         return price
-
-
-class CarPhotoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CarModel
-        fields = ('photo',)
-        extra_kwargs = {
-            'photo': {
-                'required': True
-            }
-        }

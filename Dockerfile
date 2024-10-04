@@ -28,3 +28,4 @@ COPY pyproject.toml /app/
 RUN poetry config virtualenvs.create false
 RUN poetry lock
 RUN poetry install
+
