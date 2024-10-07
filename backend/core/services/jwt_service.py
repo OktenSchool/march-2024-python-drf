@@ -14,6 +14,7 @@ from core.dataclasses.user_dataclass import User
 
 UserModel: User = get_user_model()
 
+
 class ActionToken(BlacklistMixin, Token):
     pass
 
@@ -23,13 +24,18 @@ class ActivateToken(ActionToken):
     lifetime = ActionTokenEnum.ACTIVATE.lifetime
 
 
+class RecoverToken(ActionToken):
+    token_type = ActionTokenEnum.RECOVERY_PASSWORD.token_type
+    lifetime = ActionTokenEnum.RECOVERY_PASSWORD.lifetime
+
+
 class JWTService:
     @staticmethod
-    def create_token(user, token_class:ActionTokenClassType):
+    def create_token(user, token_class: ActionTokenClassType):
         return token_class.for_user(user)
 
     @staticmethod
-    def verify_token(token, token_class:ActionTokenClassType):
+    def verify_token(token, token_class: ActionTokenClassType):
         try:
             token_res = token_class(token)
             token_res.check_blacklist()
