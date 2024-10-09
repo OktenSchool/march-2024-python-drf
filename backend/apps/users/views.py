@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
 
-from rest_framework import status
+from rest_framework import serializers, status
 from rest_framework.generics import GenericAPIView, ListCreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+
+from drf_yasg.utils import swagger_auto_schema
 
 from core.services.email_service import EmailService
 
@@ -44,13 +46,24 @@ class UserBanView(GenericAPIView):
 
         return Response(serializer.data, status.HTTP_200_OK)
 
+class ErrorSerializer(serializers.Serializer):
+    details = serializers.CharField()
 
 class UserUnBanView(GenericAPIView):
     queryset = UserModel.objects.all()
+    # serializer_class = UserSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        pass
+
+
+
+
 
     def get_queryset(self):
         return super().get_queryset().exclude(id=self.request.user.id)
 
+    @swagger_auto_schema(responses={status.HTTP_200_OK:UserSerializer, status.HTTP_400_BAD_REQUEST:ErrorSerializer})
     def patch(self, *args, **kwargs):
         user = self.get_object()
         if not user.is_active:
