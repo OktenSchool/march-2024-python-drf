@@ -109,6 +109,9 @@ class AdminToUserView(GenericAPIView):
 class TestEmailView(GenericAPIView):
     permission_classes = (AllowAny,)
 
+    def get_serializer(self, *args, **kwargs):
+        return None
+
     def get(self, *args, **kwargs):
         EmailService.send_test()
 
