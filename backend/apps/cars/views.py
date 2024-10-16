@@ -1,7 +1,13 @@
 from django.utils.decorators import method_decorator
 
 from rest_framework import status
-from rest_framework.generics import GenericAPIView, ListAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
+from rest_framework.generics import (
+    GenericAPIView,
+    ListAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+    UpdateAPIView,
+)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -13,7 +19,7 @@ from apps.cars.serializers import CarPhotoSerializer, CarSerializer
 
 
 @method_decorator(name='get', decorator=swagger_auto_schema(security=[]))
-class CarsListView(ListAPIView):
+class CarsListView(ListCreateAPIView):
     """
         show all cars
     """
@@ -22,6 +28,10 @@ class CarsListView(ListAPIView):
     pagination_class = None
     filterset_class = CarFilter
     permission_classes = (AllowAny,)
+
+    def perform_create(self, serializer):
+        serializer.save(auto_park_id=1)
+        super().perform_create(serializer)
 
 
 # @method_decorator(name='get', decorator=swagger_auto_schema(security=[]))
